@@ -27,7 +27,10 @@ export async function run() {
   getPackages()
     .then((packages: any) => {
       _.forEach(packages, (pkg: any, index: number) => {
-        console.log(pkg, index);
+        const devDependencies = _.keys(pkg.devDependencies);
+        if (_.indexOf(devDependencies, 'electron-forge')) {
+          console.log(pkg, index);
+        }
       });
     })
     .catch((error: any) => {
