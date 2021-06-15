@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "rootDir": "./src",
+    "outDir": "./lib",
+    "target": "es2015",
+    "module": "commonjs",
+    "removeComments": true,
+    "allowJs": true,
+    "strict": true,
+    "lib": ["es2015"],
+    "types": ["node"],
+    "declaration": true,
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "moduleResolution": "node",
+    "sourceMap": false,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitReturns": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "strictNullChecks": true
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules"]
+}
