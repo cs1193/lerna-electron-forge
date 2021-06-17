@@ -6,7 +6,7 @@ export async function symlinkNodeModules(pathToPackage: string) {
   try {
     const baseNodeModules = path.join(process.cwd(), 'node_modules');
     const destNodeModules = path.join(pathToPackage, 'node_modules');
-    await fse.copyFileSync(baseNodeModules, destNodeModules);
+    await fse.copySync(baseNodeModules, destNodeModules);
     console.log('Symlink Complete.');
   } catch(err) {
     console.error(err);
