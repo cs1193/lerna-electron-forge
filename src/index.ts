@@ -3,6 +3,8 @@ import * as _ from 'lodash';
 
 import { getPackages } from '@lerna/project';
 
+import { symlinkNodeModules } from './buildPackage';
+
 export async function run() {
   const yargs = require('yargs');
 
@@ -31,6 +33,8 @@ export async function run() {
         if (_.includes(devDependencies, '@electron-forge/cli')) {
           console.log(pkg.name, index);
           console.log(pkg);
+          console.log(pkg.location);
+          symlinkNodeModules(pkg.location);
         }
       });
     })
