@@ -12,3 +12,5 @@ declare module "@lerna/project" {
   import { Package } from "@lerna/package";
   export function getPackages(): Promise<Package[]>;
 }
+
+declare module '@lerna/pack-directory';

@@ -2,6 +2,7 @@ import chalk from "chalk";
 import * as _ from 'lodash';
 
 import { getPackages } from '@lerna/project';
+import { packDirectory } from '@lerna/pack-directory';
 import { api } from '@electron-forge/core';
 
 import { symlinkNodeModules } from './buildPackage';
@@ -30,6 +31,8 @@ export async function run() {
   getPackages()
     .then((packages: any) => {
       _.forEach(packages, (pkg: any, index: number) => {
+        packDirectory(pkg, pkg.location);
+
         const devDependencies = _.keys(pkg.devDependencies);
         if (_.includes(devDependencies, '@electron-forge/cli')) {
           console.log(pkg.name, index);
