@@ -28,7 +28,7 @@ export async function run() {
     .then((packages: any) => {
       _.forEach(packages, (pkg: any, index: number) => {
         const devDependencies = _.keys(pkg.devDependencies);
-        if (_.indexOf(devDependencies, 'electron-forge')) {
+        if (_.includes(devDependencies, 'electron-forge')) {
           console.log(pkg.name, index);
         }
       });
