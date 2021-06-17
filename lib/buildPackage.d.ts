@@ -1,1 +1,1 @@
-export declare function symlinkNodeModules(pathToPackage: string): void;
+export declare function symlinkNodeModules(pathToPackage: string): Promise<void>;

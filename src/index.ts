@@ -2,6 +2,7 @@ import chalk from "chalk";
 import * as _ from 'lodash';
 
 import { getPackages } from '@lerna/project';
+import { api } from '@electron-forge/core';
 
 import { symlinkNodeModules } from './buildPackage';
 
@@ -32,9 +33,8 @@ export async function run() {
         const devDependencies = _.keys(pkg.devDependencies);
         if (_.includes(devDependencies, '@electron-forge/cli')) {
           console.log(pkg.name, index);
-          console.log(pkg);
-          console.log(pkg.location);
           symlinkNodeModules(pkg.location);
+          api.package(pkg.location);
         }
       });
     })
