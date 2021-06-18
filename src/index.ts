@@ -5,7 +5,11 @@ import { getPackages } from '@lerna/project';
 import { packDirectory } from '@lerna/pack-directory';
 import { api } from '@electron-forge/core';
 
-import { symlinkNodeModules } from './buildPackage';
+import {
+  symlinkNodeModules,
+  createTmpDirectory,
+  copyPackageToTmpDirectory
+} from './buildPackage';
 
 export async function run() {
   const yargs = require('yargs');
@@ -28,9 +32,12 @@ export async function run() {
 
   console.log(argv);
 
+  createTmpDirectory();
+
   getPackages()
     .then((packages: any) => {
       _.forEach(packages, (pkg: any, index: number) => {
+        copyPackageToTmpDirectory(pkg.location);
         packDirectory(pkg, pkg.location);
 
         const devDependencies = _.keys(pkg.devDependencies);
