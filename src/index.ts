@@ -8,7 +8,8 @@ import { api } from '@electron-forge/core';
 import {
   /* symlinkNodeModules, */
   createTmpDirectory,
-  copyPackageToTmpDirectory
+  copyPackageToTmpDirectory,
+  cleanTmpDirectory
 } from './buildPackage';
 
 export async function run() {
@@ -31,6 +32,8 @@ export async function run() {
     .argv;
 
   console.log(argv);
+
+  cleanTmpDirectory();
 
   createTmpDirectory();
 
