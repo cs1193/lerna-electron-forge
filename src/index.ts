@@ -6,7 +6,7 @@ import { packDirectory } from '@lerna/pack-directory';
 import { api } from '@electron-forge/core';
 
 import {
-  symlinkNodeModules,
+  /* symlinkNodeModules, */
   createTmpDirectory,
   copyPackageToTmpDirectory
 } from './buildPackage';
@@ -41,9 +41,9 @@ export async function run() {
 
         const devDependencies = _.keys(pkg.devDependencies);
         if (_.includes(devDependencies, '@electron-forge/cli')) {
-          copyPackageToTmpDirectory(pkg.location);
+          copyPackageToTmpDirectory(pkg.name, pkg.location);
           console.log(pkg.name, index);
-          symlinkNodeModules(pkg.location);
+          // symlinkNodeModules(pkg.location);
           api.package(pkg.location);
         }
       });

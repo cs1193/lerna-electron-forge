@@ -22,11 +22,15 @@ export function createTmpDirectory() {
   }
 }
 
-export function copyPackageToTmpDirectory(pathToPackage: string) {
+export function copyPackageToTmpDirectory(packageName: string, pathToPackage: string) {
   try {
-    const tmpDir = path.join(process.cwd(), '.tmp');
+    const tmpDir = path.join(process.cwd(), `.tmp/${packageName}`);
     console.log(pathToPackage, tmpDir);
-    fse.copySync(pathToPackage, tmpDir);
+    fse.copySync(pathToPackage, tmpDir, {
+      filter: function (src) {
+        return src.indexOf('node_modules') > -1
+      }
+    });
   } catch(err) {
     console.error(err);
   }
