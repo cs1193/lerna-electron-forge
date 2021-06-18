@@ -16,7 +16,7 @@ export async function symlinkNodeModules(pathToPackage: string) {
 
 export function createTmpDirectory() {
   try {
-    fs.existsSync('.tmp') && fs.mkdirSync(path.join(process.cwd(), '.tmp'));
+    !fs.existsSync('.tmp') && fs.mkdirSync(path.join(process.cwd(), '.tmp'));
   } catch(err) {
     console.error(err);
   }
@@ -25,7 +25,7 @@ export function createTmpDirectory() {
 export function copyPackageToTmpDirectory(pathToPackage: string) {
   try {
     const tmpDir = path.join(process.cwd(), '.tmp');
-    fs.existsSync('.tmp') &&
+    !fs.existsSync('.tmp') &&
       fse.copySync(pathToPackage, tmpDir);
   } catch(err) {
     console.error(err);
