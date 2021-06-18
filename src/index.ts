@@ -1,12 +1,14 @@
+import path from 'path';
+
 import chalk from "chalk";
 import * as _ from 'lodash';
 
 import { getPackages } from '@lerna/project';
-import { packDirectory } from '@lerna/pack-directory';
+// import { packDirectory } from '@lerna/pack-directory';
 import { api } from '@electron-forge/core';
 
 import {
-  /* symlinkNodeModules, */
+  symlinkNodeModules,
   createTmpDirectory,
   copyPackageToTmpDirectory,
   cleanTmpDirectory
@@ -40,14 +42,17 @@ export async function run() {
   getPackages()
     .then((packages: any) => {
       _.forEach(packages, (pkg: any, index: number) => {
-        packDirectory(pkg, pkg.location, {});
+        // packDirectory(pkg, pkg.location, {});
 
         const devDependencies = _.keys(pkg.devDependencies);
         if (_.includes(devDependencies, '@electron-forge/cli')) {
-          copyPackageToTmpDirectory(pkg.name, pkg.location);
-          console.log(pkg.name, index);
-          // symlinkNodeModules(pkg.location);
-          api.package(pkg.location);
+          const packageName = path.basename(pkg.location);
+          copyPackageToTmpDirectory(packageName, pkg.location);
+          console.log(packageName, index);
+          symlinkNodeModules(packageName);
+          api.make({
+            dir: path.join(__dirname, `.tmp/${packageName}`)
+          });
         }
       });
     })

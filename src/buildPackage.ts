@@ -4,10 +4,10 @@ import rimraf from 'rimraf';
 
 import * as fse from 'fs-extra';
 
-export async function symlinkNodeModules(pathToPackage: string) {
+export async function symlinkNodeModules(packageName: string) {
   try {
     const baseNodeModules = path.join(process.cwd(), 'node_modules');
-    const destNodeModules = path.join(pathToPackage, 'node_modules');
+    const destNodeModules = path.join(process.cwd(), `.tmp/${packageName}`, 'node_modules');
     await fse.copySync(baseNodeModules, destNodeModules);
     console.log('Symlink Complete.');
   } catch(err) {
@@ -28,8 +28,8 @@ export function copyPackageToTmpDirectory(packageName: string, pathToPackage: st
     const tmpDir = path.join(process.cwd(), `.tmp/${packageName}`);
     console.log(pathToPackage, tmpDir);
     fse.copySync(pathToPackage, tmpDir, {
-      filter: function (src) {
-        return src.indexOf('node_modules') > -1
+      filter: (src) => {
+        return src.indexOf('node_modules') === -1;
       }
     });
   } catch(err) {
