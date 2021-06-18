@@ -37,7 +37,7 @@ export async function run() {
   getPackages()
     .then((packages: any) => {
       _.forEach(packages, (pkg: any, index: number) => {
-        packDirectory(pkg, pkg.location);
+        packDirectory(pkg, pkg.location, {});
 
         const devDependencies = _.keys(pkg.devDependencies);
         if (_.includes(devDependencies, '@electron-forge/cli')) {

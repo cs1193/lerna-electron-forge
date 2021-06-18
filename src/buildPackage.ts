@@ -1,5 +1,6 @@
 import * as fs from 'fs';
 import path from 'path';
+import rimraf from 'rimraf';
 
 import * as fse from 'fs-extra';
 
@@ -31,6 +32,14 @@ export function copyPackageToTmpDirectory(packageName: string, pathToPackage: st
         return src.indexOf('node_modules') > -1
       }
     });
+  } catch(err) {
+    console.error(err);
+  }
+}
+
+export function cleanTmpDirectory() {
+  try {
+    rimraf.sync(path.join(process.cwd(), '.tmp'));
   } catch(err) {
     console.error(err);
   }
