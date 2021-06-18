@@ -25,8 +25,8 @@ export function createTmpDirectory() {
 export function copyPackageToTmpDirectory(pathToPackage: string) {
   try {
     const tmpDir = path.join(process.cwd(), '.tmp');
-    !fs.existsSync('.tmp') &&
-      fse.copySync(pathToPackage, tmpDir);
+    console.log(pathToPackage, tmpDir);
+    fse.copySync(pathToPackage, tmpDir);
   } catch(err) {
     console.error(err);
   }
