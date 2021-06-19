@@ -50,10 +50,12 @@ export async function run() {
 
     spinner.text = 'Reading Packages';
     const packages = await getPackages();
+    spinner.succeed('Package read complete');
 
-    spinner.text = 'Reading Packages';
+    spinner.text = 'Filtering Packages';
     const otherPackages: any[] = _.filter(packages, (pkg: any) => !_.includes(_.keys(pkg.devDependencies), '@electron-forge/cli'));
     const electronForgePackages: any[] = _.filter(packages, (pkg: any) => _.includes(_.keys(pkg.devDependencies), '@electron-forge/cli'));
+    spinner.succeed('Package filtered complete');
 
     spinner.text = 'Build Other Packages';
     // @ts-ignore
@@ -61,6 +63,7 @@ export async function run() {
       buildYarnPackage(pkg.location);
       return copyTarballsToTmpDir(pkg.location);
     });
+    spinner.succeed('Other package build complete');
 
     spinner.text = 'Copy electron-forge packages to tmp';
     const electronForgePackagePaths = _.map(electronForgePackages, (pkg: any) => {
@@ -69,12 +72,16 @@ export async function run() {
       symlinkNodeModules(packageName);
       return forgePackage;
     });
+    spinner.succeed('Copied package to tmp');
 
     spinner.text = 'Build the electron-forge packages';
     _.forEach(electronForgePackagePaths, (pkgPath: any) => {
       installYarnPackage(pkgPath);
       installOtherPackagesToForgePackage(pkgPath);
     });
+    spinner.succeed('Built electron-forge packages');
+
+    spinner.stop();
 
     // getPackages()
     //   .then((packages: any) => {
