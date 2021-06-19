@@ -56,6 +56,7 @@ export function copyTarballsToTmpDir(pathToPackage: string) {
   const tmpPackagesDir = path.join(__dirname, '.tmp', 'packages');
   const tarballs = glob.sync(`${pathToPackage}/*.tgz`);
   _.map(tarballs, (tarball: string) => {
+    console.log(tarball);
     fse.copySync(tarball, tmpPackagesDir);
   });
 }
