@@ -35,8 +35,6 @@ export async function run() {
   //   .epilog("For more information, see https://github.com/cs1193/lerna-electron-forge")
   //   .argv;
 
-  // console.log(argv);
-
   cleanTmpDirectory();
 
   createTmpDirectory();
