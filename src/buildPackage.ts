@@ -53,11 +53,12 @@ export function buildYarnPackage(pathToPackage: string) {
 }
 
 export function copyTarballsToTmpDir(pathToPackage: string) {
-  const tmpPackagesDir = path.join(__dirname, '.tmp', 'packages');
+  const tmpPackagesDir = path.join(process.cwd(), '.tmp', 'packages');
   const tarballs = glob.sync(`${pathToPackage}/*.tgz`);
   _.map(tarballs, (tarball: string) => {
     const filename = path.basename(tarball);
-    fse.copySync(tarball, `${tmpPackagesDir}/${filename}`);
+    const filepath = path.join(tmpPackagesDir, filename);
+    fse.copySync(tarball, filepath);
   });
 }
 
