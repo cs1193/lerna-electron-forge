@@ -8,3 +8,5 @@ export declare function copyTarballsToTmpDir(pathToPackage: string): string[];
 export declare function createTmpPackagesDir(): void;
 export declare function installOtherPackagesToForgePackage(pathToPackage: string): void;
 export declare function makeForgePackage(pathToPackage: string): void;
+export declare function lernaBootstrap(): void;
+export declare function lernaBuildPackages(): void;

@@ -108,3 +108,19 @@ export function makeForgePackage(pathToPackage: string) {
     console.error(err);
   }
 }
+
+export function lernaBootstrap() {
+  try {
+    spawn.sync('lerna', ['bootstrap']);
+  } catch(err) {
+    console.error(err);
+  }
+}
+
+export function lernaBuildPackages() {
+  try {
+    spawn.sync('lerna', ['build']);
+  } catch(err) {
+    console.error(err);
+  }
+}

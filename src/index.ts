@@ -16,7 +16,9 @@ import {
   copyTarballsToTmpDir,
   installYarnPackage,
   installOtherPackagesToForgePackage,
-  makeForgePackage
+  makeForgePackage,
+  lernaBootstrap,
+  lernaBuildPackages
 } from './buildPackage';
 
 export async function run() {
@@ -26,14 +28,24 @@ export async function run() {
 
     spinner.text = 'Cleaning Temporary Directory';
     cleanTmpDirectory();
+    spinner.succeed('Clean complete');
 
     spinner.text = 'Create Temporary Directory';
     createTmpDirectory();
     createTmpPackagesDir();
+    spinner.succeed('Temporary Directory created');
 
     spinner.text = 'Reading Packages';
     const packages = await getPackages();
     spinner.succeed('Package read complete');
+
+    spinner.text = 'Bootstrap Packages';
+    lernaBootstrap();
+    spinner.succeed('Packages bootstrapped');
+
+    spinner.text = 'Build Packages';
+    lernaBuildPackages();
+    spinner.succeed('Packages built');
 
     spinner.text = 'Filtering Packages';
     const otherPackages: any[] = _.filter(packages, (pkg: any) => !_.includes(_.keys(pkg.devDependencies), '@electron-forge/cli'));
