@@ -4,14 +4,14 @@ import chalk from "chalk";
 import * as _ from 'lodash';
 
 import { getPackages } from '@lerna/project';
-// import { packDirectory } from '@lerna/pack-directory';
 import { api } from '@electron-forge/core';
 
 import {
   symlinkNodeModules,
   createTmpDirectory,
   copyPackageToTmpDirectory,
-  cleanTmpDirectory
+  cleanTmpDirectory,
+  buildYarnPackage
 } from './buildPackage';
 
 export async function run() {
@@ -42,7 +42,7 @@ export async function run() {
   getPackages()
     .then((packages: any) => {
       _.forEach(packages, (pkg: any, index: number) => {
-        // packDirectory(pkg, pkg.location, {});
+        buildYarnPackage(pkg.location);
 
         const devDependencies = _.keys(pkg.devDependencies);
         if (_.includes(devDependencies, '@electron-forge/cli')) {
@@ -51,7 +51,8 @@ export async function run() {
           console.log(packageName, index);
           symlinkNodeModules(packageName);
           api.make({
-            dir: path.join(__dirname, `.tmp/${packageName}`)
+            dir: path.join(__dirname, `.tmp/${packageName}`),
+            outDir: path.join(__dirname, `.tmp/${packageName}/target`)
           });
         }
       });

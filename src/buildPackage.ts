@@ -1,6 +1,7 @@
 import * as fs from 'fs';
 import path from 'path';
 import rimraf from 'rimraf';
+import spawn from 'cross-spawn';
 
 import * as fse from 'fs-extra';
 
@@ -43,4 +44,10 @@ export function cleanTmpDirectory() {
   } catch(err) {
     console.error(err);
   }
+}
+
+export function buildYarnPackage(pathToPackage: string) {
+  process.chdir(pathToPackage);
+  spawn.sync('yarn', ['pack'])
+  process.chdir('../../');
 }
