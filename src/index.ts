@@ -18,7 +18,8 @@ import {
   installOtherPackagesToForgePackage,
   makeForgePackage,
   lernaBootstrap,
-  lernaBuildPackages
+  lernaBuildPackages,
+  readForgeConfigFile
 } from './buildPackage';
 
 export async function run() {
@@ -78,6 +79,7 @@ export async function run() {
 
     spinner.text = 'Make electron-forge';
     _.forEach(electronForgePackagePaths, (pkgPath: any) => {
+      readForgeConfigFile(pkgPath);
       makeForgePackage(pkgPath);
     });
     spinner.succeed('Make electron-forge complete');

@@ -124,3 +124,31 @@ export function lernaBuildPackages() {
     console.error(err);
   }
 }
+
+export function readForgeConfigFile(pathToPackage: string) {
+  try {
+    const forgeConfigPath = path.join(pathToPackage, 'forge.config.js');
+
+    if (!fs.existsSync(forgeConfigPath)) {
+      return false;
+    }
+
+    const configData = fs.readFileSync(forgeConfigPath);
+
+    // @ts-ignore
+    const { plugins } = configData;
+    let webpackData = _.filter(plugins, (plugin: any) => plugin[0] === '@electron-forge/plugin-webpack');
+
+    // @ts-ignore
+    const { renderer } = webpackData[0][1];
+    const { entryPoints } = renderer;
+
+    console.log(entryPoints);
+
+    return entryPoints;
+
+  } catch(err) {
+    console.error(err);
+    return false;
+  }
+}

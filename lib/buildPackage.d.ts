@@ -10,3 +10,4 @@ export declare function installOtherPackagesToForgePackage(pathToPackage: string
 export declare function makeForgePackage(pathToPackage: string): void;
 export declare function lernaBootstrap(): void;
 export declare function lernaBuildPackages(): void;
+export declare function readForgeConfigFile(pathToPackage: string): any;
