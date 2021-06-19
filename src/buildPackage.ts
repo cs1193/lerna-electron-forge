@@ -33,8 +33,10 @@ export function copyPackageToTmpDirectory(packageName: string, pathToPackage: st
         return src.indexOf('node_modules') === -1;
       }
     });
+    return tmpDir;
   } catch(err) {
     console.error(err);
+    return false;
   }
 }
 
@@ -46,6 +48,12 @@ export function cleanTmpDirectory() {
   }
 }
 
+export function installYarnPackage(pathToPackage: string) {
+  process.chdir(pathToPackage);
+  spawn.sync('yarn');
+  process.chdir('../');
+}
+
 export function buildYarnPackage(pathToPackage: string) {
   process.chdir(pathToPackage);
   spawn.sync('yarn', ['pack'])
@@ -55,10 +63,11 @@ export function buildYarnPackage(pathToPackage: string) {
 export function copyTarballsToTmpDir(pathToPackage: string) {
   const tmpPackagesDir = path.join(process.cwd(), '.tmp', 'packages');
   const tarballs = glob.sync(`${pathToPackage}/*.tgz`);
-  _.map(tarballs, (tarball: string) => {
+  return _.map(tarballs, (tarball: string) => {
     const filename = path.basename(tarball);
     const filepath = path.join(tmpPackagesDir, filename);
     fse.copySync(tarball, filepath);
+    return filepath;
   });
 }
 
@@ -67,6 +76,23 @@ export function createTmpPackagesDir() {
     const tmpPackagesDir = path.join(process.cwd(), '.tmp', 'packages');
     !fs.existsSync(tmpPackagesDir) &&
       fs.mkdirSync(tmpPackagesDir);
+  } catch(err) {
+    console.error(err);
+  }
+}
+
+export function installOtherPackagesToForgePackage(pathToPackage: string) {
+  try {
+    const tmpPackagesDir = path.join(process.cwd(), '.tmp', 'packages');
+    const tarballPackages = glob.sync(`${tmpPackagesDir}/*.tgz`);
+
+    process.chdir(pathToPackage);
+    _.forEach(tarballPackages, (tarball: string) => {
+      const filename = path.basename(tarball);
+      fse.copySync(tarball, `${pathToPackage}/${filename}`);
+      spawn.sync('yarn', ['install', `${filename}`]);
+    });
+    process.chdir('../../');
   } catch(err) {
     console.error(err);
   }
