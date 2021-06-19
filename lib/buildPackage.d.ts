@@ -7,3 +7,4 @@ export declare function buildYarnPackage(pathToPackage: string): void;
 export declare function copyTarballsToTmpDir(pathToPackage: string): string[];
 export declare function createTmpPackagesDir(): void;
 export declare function installOtherPackagesToForgePackage(pathToPackage: string): void;
+export declare function makeForgePackage(pathToPackage: string): void;

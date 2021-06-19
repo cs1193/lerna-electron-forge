@@ -6,6 +6,7 @@ import glob from 'glob';
 
 import * as fse from 'fs-extra';
 import * as _ from 'lodash';
+import { api } from '@electron-forge/core';
 
 export async function symlinkNodeModules(packageName: string) {
   try {
@@ -93,6 +94,16 @@ export function installOtherPackagesToForgePackage(pathToPackage: string) {
       spawn.sync('yarn', ['install', `${filename}`]);
     });
     process.chdir('../../');
+  } catch(err) {
+    console.error(err);
+  }
+}
+
+export function makeForgePackage(pathToPackage: string) {
+  try {
+    api.make({
+      dir: pathToPackage
+    });
   } catch(err) {
     console.error(err);
   }
