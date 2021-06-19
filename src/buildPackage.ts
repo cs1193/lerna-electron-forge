@@ -62,7 +62,7 @@ export function copyTarballsToTmpDir(pathToPackage: string) {
 
 export function createTmpPackagesDir() {
   try {
-    const tmpPackagesDir = path.join(__dirname, '.tmp', 'packages');
+    const tmpPackagesDir = path.join(process.cwd(), '.tmp', 'packages');
     !fs.existsSync(tmpPackagesDir) &&
       fs.mkdirSync(tmpPackagesDir);
   } catch(err) {
