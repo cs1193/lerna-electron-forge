@@ -2,6 +2,7 @@ import * as fs from 'fs';
 import path from 'path';
 import rimraf from 'rimraf';
 import spawn from 'cross-spawn';
+import glob from 'glob';
 
 import * as fse from 'fs-extra';
 
@@ -50,4 +51,6 @@ export function buildYarnPackage(pathToPackage: string) {
   process.chdir(pathToPackage);
   spawn.sync('yarn', ['pack'])
   process.chdir('../../');
+  const tarballs = glob.sync(`${pathToPackage}/*.tgz`);
+  console.log(tarballs);
 }
