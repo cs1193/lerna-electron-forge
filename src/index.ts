@@ -11,51 +11,66 @@ import {
   createTmpDirectory,
   copyPackageToTmpDirectory,
   cleanTmpDirectory,
-  buildYarnPackage
+  buildYarnPackage,
+  createTmpPackagesDir,
+  copyTarballsToTmpDir
 } from './buildPackage';
 
 export async function run() {
-  const yargs = require('yargs');
+  // const yargs = require('yargs');
 
-  const argv = yargs
-    .usage('lerna-electron-forge [options]')
-    .options({
-      list: {
-        type: "boolean"
-      },
-      build: {
-        type: "string"
-      }
-    })
-    .example(
-      "lerna-electron-forge build"
-    )
-    .epilog("For more information, see https://github.com/cs1193/lerna-electron-forge")
-    .argv;
+  // const argv = yargs
+  //   .usage('lerna-electron-forge [options]')
+  //   .options({
+  //     list: {
+  //       type: "boolean"
+  //     },
+  //     build: {
+  //       type: "string"
+  //     }
+  //   })
+  //   .example(
+  //     "lerna-electron-forge build"
+  //   )
+  //   .epilog("For more information, see https://github.com/cs1193/lerna-electron-forge")
+  //   .argv;
 
-  console.log(argv);
+  // console.log(argv);
 
   cleanTmpDirectory();
 
   createTmpDirectory();
 
+  const nonElectronForgePackages: any = [];
+
   getPackages()
     .then((packages: any) => {
-      _.forEach(packages, (pkg: any, index: number) => {
-        buildYarnPackage(pkg.location);
+      _.forEach(packages, (pkg: any/*, index: number*/) => {
+        // buildYarnPackage(pkg.location);
 
         const devDependencies = _.keys(pkg.devDependencies);
         if (_.includes(devDependencies, '@electron-forge/cli')) {
           const packageName = path.basename(pkg.location);
           copyPackageToTmpDirectory(packageName, pkg.location);
-          console.log(packageName, index);
           symlinkNodeModules(packageName);
           api.make({
             dir: path.join(__dirname, `.tmp/${packageName}`),
             outDir: path.join(__dirname, `.tmp/${packageName}/target`)
           });
         }
+
+        if (!_.includes(devDependencies, '@electron-forge/cli')) {
+          nonElectronForgePackages.push(pkg.location);
+        }
       });
+
+      createTmpPackagesDir();
+
+      _.map(nonElectronForgePackages, (npe: any) => {
+        buildYarnPackage(npe);
+        copyTarballsToTmpDir(npe);
+      });
+
     })
     .catch((error: any) => {
       console.error(

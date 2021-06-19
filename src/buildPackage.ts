@@ -5,6 +5,7 @@ import spawn from 'cross-spawn';
 import glob from 'glob';
 
 import * as fse from 'fs-extra';
+import * as _ from 'lodash';
 
 export async function symlinkNodeModules(packageName: string) {
   try {
@@ -53,4 +54,22 @@ export function buildYarnPackage(pathToPackage: string) {
   process.chdir('../../');
   const tarballs = glob.sync(`${pathToPackage}/*.tgz`);
   console.log(tarballs);
+}
+
+export function copyTarballsToTmpDir(pathToPackage: string) {
+  const tmpPackagesDir = path.join(__dirname, '.tmp', 'packages');
+  const tarballs = glob.sync(`${pathToPackage}/*.tgz`);
+  _.map(tarballs, (tarball: string) => {
+    fse.copySync(tarball, tmpPackagesDir);
+  });
+}
+
+export function createTmpPackagesDir() {
+  try {
+    const tmpPackagesDir = path.join(__dirname, '.tmp', 'packages');
+    !fs.existsSync(tmpPackagesDir) &&
+      fs.mkdirSync(tmpPackagesDir);
+  } catch(err) {
+    console.error(err);
+  }
 }
