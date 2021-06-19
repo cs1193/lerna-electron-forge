@@ -52,8 +52,8 @@ export async function run() {
           copyPackageToTmpDirectory(packageName, pkg.location);
           symlinkNodeModules(packageName);
           api.make({
-            dir: path.join(__dirname, `.tmp/${packageName}`),
-            outDir: path.join(__dirname, `.tmp/${packageName}/target`)
+            dir: path.join(process.cwd(), `.tmp/${packageName}`),
+            outDir: path.join(process.cwd(), `.tmp/${packageName}/target`)
           });
         }
 
