@@ -127,6 +127,8 @@ export function lernaBuildPackages() {
 
 export function readForgeConfigFile(pathToPackage: string) {
   try {
+    const tmpPackagesDir = path.join(process.cwd(), '.tmp');
+    process.chdir(pathToPackage);
     const forgeConfigPath = path.join(pathToPackage, 'forge.config.js');
 
     if (!fs.existsSync(forgeConfigPath)) {
@@ -138,9 +140,10 @@ export function readForgeConfigFile(pathToPackage: string) {
     // @ts-ignore
     const { plugins } = configData;
     let webpackData = _.filter(plugins, (plugin: any) => plugin[0] === '@electron-forge/plugin-webpack');
+    webpackData = webpackData && webpackData.length > 0 && webpackData[0] && webpackData[0][1];
 
     // @ts-ignore
-    const { renderer } = webpackData[0] && webpackData[0][1];
+    const { renderer } = webpackData;
 
     if (!renderer) {
       return false;
@@ -148,7 +151,14 @@ export function readForgeConfigFile(pathToPackage: string) {
 
     const { entryPoints } = renderer;
 
-    console.log(entryPoints);
+    _.forEach(entryPoints, (entryPoint) => {
+      const ep = path.dirname(entryPoint.html).split(path.sep);
+      const epDir = ep[ep.length - 2];
+      const originalPackage = path.join('../../packages', epDir);
+      fse.copySync(originalPackage, tmpPackagesDir);
+    });
+
+    process.chdir('../../');
 
     return entryPoints;
 

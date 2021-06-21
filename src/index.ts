@@ -87,8 +87,10 @@ export async function run() {
     _.forEach(electronForgePackagePaths, (pkgPath: any) => {
       spinner.text = `Reading forge.config.js on ${pkgPath}`;
       readForgeConfigFile(pkgPath);
+      spinner.succeed(`Reading forge.config.js on ${pkgPath}`);
       spinner.text = `Making forge package on ${pkgPath}`;
       makeForgePackage(pkgPath);
+      spinner.succeed(`Making forge package on ${pkgPath}`);
     });
     spinner.succeed('Make electron-forge complete');
 
