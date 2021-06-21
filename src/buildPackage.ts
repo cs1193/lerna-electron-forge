@@ -140,7 +140,12 @@ export function readForgeConfigFile(pathToPackage: string) {
     let webpackData = _.filter(plugins, (plugin: any) => plugin[0] === '@electron-forge/plugin-webpack');
 
     // @ts-ignore
-    const { renderer } = webpackData[0][1];
+    const { renderer } = webpackData[0] && webpackData[0][1];
+
+    if (!renderer) {
+      return false;
+    }
+
     const { entryPoints } = renderer;
 
     console.log(entryPoints);
