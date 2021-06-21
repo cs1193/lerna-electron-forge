@@ -58,6 +58,8 @@ export async function run() {
     const otherPackagesTmpPaths = _.map(otherPackages, (pkg: any) => {
       spinner.text = 'Building Yarn Package';
       buildYarnPackage(pkg.location);
+      const packageName = path.basename(pkg.location);
+      copyPackageToTmpDirectory(packageName, pkg.location);
       spinner.text = 'Copying Tarballs to .tmp Directory';
       return copyTarballsToTmpDir(pkg.location);
     });
