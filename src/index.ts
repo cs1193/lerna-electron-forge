@@ -56,15 +56,19 @@ export async function run() {
     spinner.text = 'Build Other Packages';
     // @ts-ignore
     const otherPackagesTmpPaths = _.map(otherPackages, (pkg: any) => {
+      spinner.text = 'Building Yarn Package';
       buildYarnPackage(pkg.location);
+      spinner.text = 'Copying Tarballs to .tmp Directory';
       return copyTarballsToTmpDir(pkg.location);
     });
     spinner.succeed('Other package build complete');
 
-    spinner.text = 'Copy electron-forge packages to tmp';
+    spinner.text = 'Copy electron-forge packages to .tmp directory';
     const electronForgePackagePaths = _.map(electronForgePackages, (pkg: any) => {
       const packageName = path.basename(pkg.location);
+      spinner.text = `Copying ${pkg.name} to .tmp directory`;
       const forgePackage = copyPackageToTmpDirectory(packageName, pkg.location);
+      spinner.text = `Symlinking the root <node_modules> to ${pkg.name} node_modules`;
       symlinkNodeModules(packageName);
       return forgePackage;
     });
@@ -72,14 +76,18 @@ export async function run() {
 
     spinner.text = 'Build the electron-forge packages';
     _.forEach(electronForgePackagePaths, (pkgPath: any) => {
+      spinner.text = `Installing yarn on ${pkgPath}`;
       installYarnPackage(pkgPath);
+      spinner.text = `Installing the tarballs on ${pkgPath}`;
       installOtherPackagesToForgePackage(pkgPath);
     });
     spinner.succeed('Built electron-forge packages');
 
     spinner.text = 'Make electron-forge';
     _.forEach(electronForgePackagePaths, (pkgPath: any) => {
+      spinner.text = `Reading forge.config.js on ${pkgPath}`;
       readForgeConfigFile(pkgPath);
+      spinner.text = `Making forge package on ${pkgPath}`;
       makeForgePackage(pkgPath);
     });
     spinner.succeed('Make electron-forge complete');
