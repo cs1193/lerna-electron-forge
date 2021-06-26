@@ -2,6 +2,6 @@
 
 "use strict";
 
-var cli = require("../lib/index");
+var cli = require("../lib/cli");
 
 cli.run();

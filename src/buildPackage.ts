@@ -152,9 +152,12 @@ export function readForgeConfigFile(pathToPackage: string) {
     const { entryPoints } = renderer;
 
     _.forEach(entryPoints, (entryPoint) => {
-      const ep = path.dirname(entryPoint.html).split(path.sep);
-      const epDir = ep[ep.length - 2];
+      const ep = path.dirname(entryPoint.html)
+      const epSplit = ep.split(path.sep);
+      const epDir = epSplit[epSplit.length - 2];
       const originalPackage = path.join('../../packages', epDir);
+      // const mainFilePath = glob.sync(path.join(ep, 'build', 'main.*'));
+      // const mainFile = path.basename(mainFilePath[0]);
       fse.copySync(originalPackage, tmpPackagesDir);
     });
 

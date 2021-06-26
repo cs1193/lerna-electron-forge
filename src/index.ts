@@ -1,3 +1,7 @@
+// 0. lerna-electron-forge init - append .lerna-electron-forge directory as .gitignore - with a comment not to edit it
+// 1. Create .lerna-electron-forge directory
+
+
 import path from 'path';
 
 import chalk from "chalk";
