@@ -33,7 +33,9 @@ async function parallelAppBuilds() {
     );
 
     for (let i = 0; i < CPUS; i++) {
-      cluster.fork();
+      if (apps.length > 0) {
+        cluster.fork();
+      }
     }
 
     cluster.on('online', (worker) => {
