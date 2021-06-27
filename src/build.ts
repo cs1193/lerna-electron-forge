@@ -23,6 +23,8 @@ async function parallelAppBuilds() {
     };
   });
 
+  console.log('apps.length', apps.length);
+
   let appData: any;
 
   if (cluster.isMaster) {
@@ -37,6 +39,7 @@ async function parallelAppBuilds() {
     for (let i = 0; i < CPUS; i++) {
       if (apps.length > 0) {
         appData = apps.pop();
+        console.log('appData in cpus', appData);
         cluster.fork();
       }
     }
@@ -53,7 +56,9 @@ async function parallelAppBuilds() {
       // }
     });
   } else {
+    console.log(appData);
     if (appData) {
+      console.log('Reach Here');
       // @ts-ignore
       buildApp(appData.name, appData.location, () => {
         process.exit(0);
