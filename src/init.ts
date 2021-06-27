@@ -6,7 +6,7 @@ import chalk from 'chalk';
 import * as _ from 'lodash';
 import ora from 'ora';
 
-import { getElectronForgePackages, isLernaMonorepo } from './lernaData';
+import { getElectronForgePackages, isLernaMonorepo } from './lerna';
 
 let spinner: any;
 
@@ -39,7 +39,7 @@ async function listElectronForgePackages() {
   });
 
   const tableData = _.map(electronForgePackages, (efp: any) => {
-    return [efp.name, efp.path];
+    return [efp.name, efp.location];
   });
 
   _.forEach(tableData, (td) => {

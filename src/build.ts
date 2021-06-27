@@ -5,7 +5,7 @@ import chalk from 'chalk';
 import * as _ from 'lodash';
 import ora from 'ora';
 
-import { getElectronForgePackages } from './lernaData';
+import { getElectronForgePackages } from './lerna';
 
 const CPUS = os.cpus().length;
 
