@@ -7,10 +7,7 @@ function appendLernaElectroForgeToGitignore() {
   const rootDir = path.resolve(process.cwd());
   const gitignoreFile = path.join(rootDir, '.gitignore');
 
-  const gitignoreData: string = `
-    // .lerna-electron-forge gitignore. DO NOT REMOVE.
-    .lerna-electron-forge
-  `;
+  const gitignoreData: string = `// .lerna-electron-forge gitignore. DO NOT REMOVE.\n.lerna-electron-forge`;
 
   fs.existsSync(gitignoreFile) && fs.appendFileSync(gitignoreFile, gitignoreData)
 }
@@ -19,7 +16,7 @@ function createLernaElectronForgeDirectory() {
   const rootDir = path.resolve(process.cwd());
   const lernaElectronForgeDirectory = path.join(rootDir, '.lerna-electron-forge');
 
-  fs.existsSync(lernaElectronForgeDirectory) && fs.mkdirSync(lernaElectronForgeDirectory);
+  !fs.existsSync(lernaElectronForgeDirectory) && fs.mkdirSync(lernaElectronForgeDirectory);
 }
 
 function isLernaMonorepo() {
