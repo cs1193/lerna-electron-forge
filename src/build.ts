@@ -6,6 +6,7 @@ import ora from 'ora';
 import * as fse from 'fs-extra';
 import spawn from 'cross-spawn';
 import glob from 'glob';
+import { api } from '@electron-forge/core';
 
 import { getElectronForgePackages, getLernaDependentsForApp } from './lerna';
 
@@ -19,7 +20,6 @@ async function parallelAppBuilds() {
     copyPackageToLernaElectronForgeDirectory(packageName, efp.location);
     copyDependentPackagesToLernaElectronForgeDirectory(efp.name);
     installDependentTarballs(efp.name, packageName);
-    // @ts-ignore
     buildApp(efp.name, efp.location);
   });
 }
@@ -27,8 +27,15 @@ async function parallelAppBuilds() {
 // @ts-ignore
 async function buildApp(appName: string, appPath: string) {
   const packageName: string = path.basename(appPath);
-  copyPackageToLernaElectronForgeDirectory(packageName, appPath);
-  // console.log(appName, appPath);
+  const tmpDir = path.join(process.cwd(), `.lerna-electron-forge/${packageName}`);
+
+  try {
+    api.make({
+      dir: tmpDir
+    });
+  } catch(err) {
+    console.error(err);
+  }
 }
 
 async function copyDependentPackagesToLernaElectronForgeDirectory(name: string) {
@@ -63,14 +70,19 @@ function copyTarballsToLernaElectronForgeDirectory(pathToPackage: string) {
 async function installDependentTarballs(appName: string, packageName: string) {
   try {
     const tmpDir = path.join(process.cwd(), `.lerna-electron-forge/${packageName}`);
-    // const tmpPackagesDir = path.join(process.cwd(), `.lerna-electron-forge`, `packages`);
+    const tmpPackagesDir = path.join(process.cwd(), `.lerna-electron-forge`, `packages`);
 
     const dependents = await getLernaDependentsForApp(appName);
 
     process.chdir(tmpDir);
 
     _.forEach(dependents, (dep: any) => {
-      console.log(dep);
+      const depPackageName = path.basename(dep.location);
+      const tarballs = glob.sync(`${tmpPackagesDir}/${depPackageName}-*`);
+
+      if (tarballs && tarballs.length > 0 && tarballs[0]) {
+        spawn.sync('yarn', ['install', `${tarballs[0]}`]);
+      }
     });
 
     process.chdir('../../');
