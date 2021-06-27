@@ -23,6 +23,8 @@ async function parallelAppBuilds() {
     };
   });
 
+  let appData: any;
+
   if (cluster.isMaster) {
     console.log(
       chalk.yellow(`Number of CPUs is ${CPUS}.`)
@@ -33,6 +35,7 @@ async function parallelAppBuilds() {
     );
 
     for (let i = 0; i < CPUS; i++) {
+      appData = apps.pop();
       if (apps.length > 0) {
         cluster.fork();
       }
@@ -49,9 +52,10 @@ async function parallelAppBuilds() {
       }
     });
   } else {
-    const appData = apps.pop();
-    // @ts-ignore
-    buildApp(appData.name, appData.location);
+    if (appData) {
+      // @ts-ignore
+      buildApp(appData.name, appData.location);
+    }
   }
 }
 
