@@ -20,6 +20,7 @@ async function parallelAppBuilds() {
     copyPackageToLernaElectronForgeDirectory(packageName, efp.location);
     copyDependentPackagesToLernaElectronForgeDirectory(efp.name);
     installDependentTarballs(efp.name, packageName);
+    installYarnPackage(packageName);
     buildApp(efp.name, efp.location);
   });
 }
@@ -104,6 +105,13 @@ function copyPackageToLernaElectronForgeDirectory(packageName: string, pathToPac
     console.error(err);
     return false;
   }
+}
+
+function installYarnPackage(packageName: string) {
+  const tmpDir = path.join(process.cwd(), `.lerna-electron-forge/${packageName}`);
+  process.chdir(tmpDir);
+  spawn.sync('yarn');
+  process.chdir('../../');
 }
 
 export function buildCommand() {
