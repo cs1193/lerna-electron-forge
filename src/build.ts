@@ -14,16 +14,12 @@ let spinner: any;
 async function parallelAppBuilds() {
   const electronForgePackages = await getElectronForgePackages();
 
-  console.log(electronForgePackages.length);
-
   const apps = _.map(electronForgePackages, (efp) => {
     return {
       name: efp.name,
       location: efp.location
     };
   });
-
-  console.log('apps.length', apps.length);
 
   let appData: any;
 
@@ -39,8 +35,8 @@ async function parallelAppBuilds() {
     for (let i = 0; i < CPUS; i++) {
       if (apps.length > 0) {
         appData = apps.pop();
-        console.log('appData in cpus', appData);
-        cluster.fork();
+        const worker = cluster.fork();
+        worker.send(appData);
       }
     }
 
@@ -56,14 +52,14 @@ async function parallelAppBuilds() {
       // }
     });
   } else {
-    console.log(appData);
-    if (appData) {
-      console.log('Reach Here');
-      // @ts-ignore
-      buildApp(appData.name, appData.location, () => {
-        process.exit(0);
-      });
-    }
+    process.on('message', (appData) => {
+      if (appData) {
+        // @ts-ignore
+        buildApp(appData.name, appData.location, () => {
+          process.exit(0);
+        });
+      }
+    });
   }
 }
 
