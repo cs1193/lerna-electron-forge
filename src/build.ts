@@ -18,6 +18,7 @@ async function parallelAppBuilds() {
     const packageName: string = path.basename(efp.location);
     copyPackageToLernaElectronForgeDirectory(packageName, efp.location);
     copyDependentPackagesToLernaElectronForgeDirectory(efp.name);
+    installDependentTarballs(efp.name, packageName);
     // @ts-ignore
     buildApp(efp.name, efp.location);
   });
@@ -57,6 +58,25 @@ function copyTarballsToLernaElectronForgeDirectory(pathToPackage: string) {
     fse.copySync(tarball, filepath);
     return filepath;
   });
+}
+
+async function installDependentTarballs(appName: string, packageName: string) {
+  try {
+    const tmpDir = path.join(process.cwd(), `.lerna-electron-forge/${packageName}`);
+    // const tmpPackagesDir = path.join(process.cwd(), `.lerna-electron-forge`, `packages`);
+
+    const dependents = await getLernaDependentsForApp(appName);
+
+    process.chdir(tmpDir);
+
+    _.forEach(dependents, (dep: any) => {
+      console.log(dep);
+    });
+
+    process.chdir('../../');
+  } catch(err) {
+    console.error(err);
+  }
 }
 
 function copyPackageToLernaElectronForgeDirectory(packageName: string, pathToPackage: string) {
