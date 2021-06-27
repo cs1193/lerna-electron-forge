@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import path from 'path';
 
 // import chalk from 'chalk';
@@ -13,26 +15,25 @@ import { getElectronForgePackages, getLernaDependentsForApp } from './lerna';
 let spinner: any;
 
 async function parallelAppBuilds() {
+  lernaBootstrap();
+
   const electronForgePackages = await getElectronForgePackages();
 
   _.forEach(electronForgePackages, (efp) => {
-    const packageName: string = path.basename(efp.location);
-    copyPackageToLernaElectronForgeDirectory(packageName, efp.location);
-    copyDependentPackagesToLernaElectronForgeDirectory(efp.name);
-    installDependentTarballs(efp.name, packageName);
-    installYarnPackage(packageName);
+    // const packageName: string = path.basename(efp.location);
+    // copyPackageToLernaElectronForgeDirectory(packageName, efp.location);
+    // copyDependentPackagesToLernaElectronForgeDirectory(efp.name);
+    // installDependentTarballs(efp.name, packageName);
+    // installYarnPackage(packageName);
     buildApp(efp.name, efp.location);
   });
 }
 
 // @ts-ignore
 async function buildApp(appName: string, appPath: string) {
-  const packageName: string = path.basename(appPath);
-  const tmpDir = path.join(process.cwd(), `.lerna-electron-forge/${packageName}`);
-
   try {
     api.make({
-      dir: tmpDir
+      dir: appPath
     });
   } catch(err) {
     console.error(err);
@@ -43,11 +44,8 @@ async function copyDependentPackagesToLernaElectronForgeDirectory(name: string) 
   const dependents = await getLernaDependentsForApp(name);
 
   _.forEach(dependents, (dep: any) => {
-    console.log(dep.name, dep.location);
-    // const packageName: string = path.basename(dep.location);
     createTarballs(dep.location);
     copyTarballsToLernaElectronForgeDirectory(dep.location);
-    // copyPackageToLernaElectronForgeDirectory(packageName, dep.location);
   });
 }
 
@@ -112,6 +110,14 @@ function installYarnPackage(packageName: string) {
   process.chdir(tmpDir);
   spawn.sync('yarn');
   process.chdir('../../');
+}
+
+function lernaBootstrap() {
+  try {
+    spawn.sync('lerna', ['bootstrap']);
+  } catch(err) {
+    console.error(err);
+  }
 }
 
 export function buildCommand() {
