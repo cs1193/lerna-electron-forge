@@ -6,7 +6,7 @@ import chalk from 'chalk';
 import * as _ from 'lodash';
 import ora from 'ora';
 
-import { getElectronForgePackages } from './lernaData';
+import { getElectronForgePackages, isLernaMonorepo } from './lernaData';
 
 let spinner: any;
 
@@ -31,13 +31,6 @@ function createLernaElectronForgeDirectory() {
   spinner.succeed('Create directory is complete.');
 }
 
-function isLernaMonorepo() {
-  const rootDir = path.resolve(process.cwd());
-  const lernaConfigFile = path.join(rootDir, 'lerna.json');
-
-  return fs.existsSync(lernaConfigFile);
-}
-
 async function listElectronForgePackages() {
   spinner.text = 'Check if electron-forge packages are existing in lerna packages.';
   const electronForgePackages = await getElectronForgePackages();
@@ -56,7 +49,6 @@ async function listElectronForgePackages() {
   });
 
   console.log(
-    '\n',
     chalk.red('List Electron Forge Packages'),
     '\n'
   );
@@ -64,8 +56,6 @@ async function listElectronForgePackages() {
   console.log(
     table.toString()
   );
-
-  console.log('\n');
 
   spinner.succeed('Checking of electron-forge package is complete.');
 }

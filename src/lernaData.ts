@@ -1,3 +1,6 @@
+import path from 'path';
+import * as fs from 'fs';
+
 import { getPackages } from '@lerna/project';
 import * as _ from 'lodash';
 
@@ -10,3 +13,10 @@ export const getElectronForgePackages = async (): Promise<any | undefined> => ne
     reject(e);
   }
 });
+
+export function isLernaMonorepo() {
+  const rootDir = path.resolve(process.cwd());
+  const lernaConfigFile = path.join(rootDir, 'lerna.json');
+
+  return fs.existsSync(lernaConfigFile);
+}
