@@ -15,7 +15,10 @@ async function parallelAppBuilds() {
   spinner.text = 'Parallelize app building..';
   const electronForgePackages = await getElectronForgePackages();
   const apps = _.map(electronForgePackages, (efp) => {
-    return efp.name
+    return {
+      name: efp.name,
+      location: efp.location
+    };
   });
 
   if (cluster.isMaster) {
@@ -31,13 +34,18 @@ async function parallelAppBuilds() {
       cluster.fork();
     }
 
+    cluster.on('online', (worker) => {
+      console.log(`Worker ${worker.process.pid} is online`);
+    });
+
     cluster.on('exit', (worker, _code, _signal) => {
       console.log(`Worker ${worker.process.pid} died`);
       cluster.fork();
     });
   } else {
     const appData = apps.pop();
-    buildApp(appData, '');
+    // @ts-ignore
+    buildApp(appData.name, appData.location);
   }
 
   spinner.succeed('Apps build complete.');
