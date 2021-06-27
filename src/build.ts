@@ -35,8 +35,8 @@ async function parallelAppBuilds() {
     );
 
     for (let i = 0; i < CPUS; i++) {
-      appData = apps.pop();
       if (apps.length > 0) {
+        appData = apps.pop();
         cluster.fork();
       }
     }
@@ -48,6 +48,7 @@ async function parallelAppBuilds() {
     cluster.on('exit', (worker, _code, _signal) => {
       console.log(`Worker ${worker.process.pid} died`);
       if (apps.length > 0) {
+        appData = apps.pop();
         cluster.fork();
       }
     });
