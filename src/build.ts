@@ -47,21 +47,24 @@ async function parallelAppBuilds() {
 
     cluster.on('exit', (worker, _code, _signal) => {
       console.log(`Worker ${worker.process.pid} died`);
-      if (apps.length > 0) {
-        appData = apps.pop();
-        cluster.fork();
-      }
+      // if (apps.length > 0) {
+      //   appData = apps.pop();
+      //   cluster.fork();
+      // }
     });
   } else {
     if (appData) {
       // @ts-ignore
-      buildApp(appData.name, appData.location);
+      buildApp(appData.name, appData.location, () => {
+        process.exit(0);
+      });
     }
   }
 }
 
-async function buildApp(appName: string, appPath: string) {
+async function buildApp(appName: string, appPath: string, callback: Function) {
   console.log(appName, appPath);
+  callback();
 }
 
 export function buildCommand() {
