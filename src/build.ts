@@ -13,7 +13,7 @@ async function parallelAppBuilds() {
   const electronForgePackages = await getElectronForgePackages();
 
   _.forEach(electronForgePackages, (efp) => {
-    const packageName: string = path.basename(efp.name);
+    const packageName: string = path.basename(efp.location);
     copyPackageToLernaElectronForgeDirectory(packageName, efp.location);
     copyDependentPackagesToLernaElectronForgeDirectory(efp.name);
     // @ts-ignore
@@ -22,7 +22,7 @@ async function parallelAppBuilds() {
 }
 
 async function buildApp(appName: string, appPath: string) {
-  const packageName: string = path.basename(appName);
+  const packageName: string = path.basename(appPath);
   copyPackageToLernaElectronForgeDirectory(packageName, appPath);
   console.log(appName, appPath);
 }
@@ -32,7 +32,7 @@ async function copyDependentPackagesToLernaElectronForgeDirectory(name: string) 
 
   _.forEach(dependents, (dep: any) => {
     console.log(dep.name);
-    const packageName: string = path.basename(dep.name);
+    const packageName: string = path.basename(dep.location);
     copyPackageToLernaElectronForgeDirectory(packageName, dep.location);
   });
 }
