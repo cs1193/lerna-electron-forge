@@ -12,8 +12,10 @@ const CPUS = os.cpus().length;
 let spinner: any;
 
 async function parallelAppBuilds() {
-  spinner.text = 'Parallelize app building..';
   const electronForgePackages = await getElectronForgePackages();
+
+  console.log(electronForgePackages.length);
+
   const apps = _.map(electronForgePackages, (efp) => {
     return {
       name: efp.name,
@@ -40,15 +42,15 @@ async function parallelAppBuilds() {
 
     cluster.on('exit', (worker, _code, _signal) => {
       console.log(`Worker ${worker.process.pid} died`);
-      cluster.fork();
+      if (apps.length > 0) {
+        cluster.fork();
+      }
     });
   } else {
     const appData = apps.pop();
     // @ts-ignore
     buildApp(appData.name, appData.location);
   }
-
-  spinner.succeed('Apps build complete.');
 }
 
 async function buildApp(appName: string, appPath: string) {
