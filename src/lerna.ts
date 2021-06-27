@@ -13,18 +13,8 @@ export const getLernaDependentsForApp = async (appName: string): Promise<any | u
     const graph = new PackageGraph(packages, 'allDependencies', true);
 
     const dependents = graph.get(appName).localDependencies && Array.from(graph.get(appName).localDependencies.keys());
-    console.log(dependents);
 
-    const filteredDependents = _.filter(packages, (pkg: any) => {
-      console.log(pkg);
-      _.forEach(dependents, (dep: any, index: number) => {
-        console.log(`d ${index}`, dep);
-        if (_.isEqual(pkg.name, dep.name)) {
-          console.log('matched', index);
-          return pkg;
-        }
-      })
-    });
+    const filteredDependents = _.filter(packages, (pkg: any) => _.includes(dependents, pkg.name));
 
     resolve(filteredDependents);
   } catch (e) {
