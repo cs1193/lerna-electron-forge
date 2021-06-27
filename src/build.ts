@@ -21,17 +21,18 @@ async function parallelAppBuilds() {
   });
 }
 
+// @ts-ignore
 async function buildApp(appName: string, appPath: string) {
   const packageName: string = path.basename(appPath);
   copyPackageToLernaElectronForgeDirectory(packageName, appPath);
-  console.log(appName, appPath);
+  // console.log(appName, appPath);
 }
 
 async function copyDependentPackagesToLernaElectronForgeDirectory(name: string) {
   const dependents = await getLernaDependentsForApp(name);
 
   _.forEach(dependents, (dep: any) => {
-    console.log(dep.name);
+    console.log(dep.name, dep.location);
     const packageName: string = path.basename(dep.location);
     copyPackageToLernaElectronForgeDirectory(packageName, dep.location);
   });
