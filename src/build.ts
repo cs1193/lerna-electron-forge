@@ -4,6 +4,8 @@ import path from 'path';
 import * as _ from 'lodash';
 import ora from 'ora';
 import * as fse from 'fs-extra';
+import spawn from 'cross-spawn';
+import glob from 'glob';
 
 import { getElectronForgePackages, getLernaDependentsForApp } from './lerna';
 
@@ -33,8 +35,27 @@ async function copyDependentPackagesToLernaElectronForgeDirectory(name: string) 
 
   _.forEach(dependents, (dep: any) => {
     console.log(dep.name, dep.location);
-    const packageName: string = path.basename(dep.location);
-    copyPackageToLernaElectronForgeDirectory(packageName, dep.location);
+    // const packageName: string = path.basename(dep.location);
+    createTarballs(dep.location);
+    copyTarballsToLernaElectronForgeDirectory(dep.location);
+    // copyPackageToLernaElectronForgeDirectory(packageName, dep.location);
+  });
+}
+
+function createTarballs(pathToPackage: string) {
+  process.chdir(pathToPackage);
+  spawn.sync('yarn', ['pack'])
+  process.chdir('../../');
+}
+
+function copyTarballsToLernaElectronForgeDirectory(pathToPackage: string) {
+  const tmpDir = path.join(process.cwd(), `.lerna-electron-forge`, `packages`);
+  const tarballs = glob.sync(`${pathToPackage}/*.tgz`);
+  return _.map(tarballs, (tarball: string) => {
+    const filename = path.basename(tarball);
+    const filepath = path.join(tmpDir, filename);
+    fse.copySync(tarball, filepath);
+    return filepath;
   });
 }
 
