@@ -10,7 +10,7 @@ import * as _ from 'lodash';
 export const getLernaDependentsForApp = async (appName: string): Promise<any | undefined> => new Promise(async (resolve, reject) => {
   try {
     const packages = await getPackages();
-    const graph = new PackageGraph(packages);
+    const graph = new PackageGraph(packages, 'allDependencies', true);
 
     const dependents = {
       external: graph.get(appName).externalDependencies,
