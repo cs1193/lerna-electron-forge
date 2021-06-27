@@ -31,6 +31,7 @@ async function copyDependentPackagesToLernaElectronForgeDirectory(name: string) 
   const dependents = await getLernaDependentsForApp(name);
 
   _.forEach(dependents, (dep: any) => {
+    console.log(dep.name);
     const packageName: string = path.basename(dep.name);
     copyPackageToLernaElectronForgeDirectory(packageName, dep.location);
   });
