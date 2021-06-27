@@ -12,13 +12,17 @@ export const getLernaDependentsForApp = async (appName: string): Promise<any | u
     const packages = await getPackages();
     const graph = new PackageGraph(packages, 'allDependencies', true);
 
-    const dependents = {
-      external: graph.get(appName).externalDependencies,
-      localDependents: graph.get(appName).localDependents,
-      localDependencies: graph.get(appName).localDependencies,
-    };
+    const dependents = graph.get(appName).localDependencies;
 
-    resolve(dependents);
+    const filteredDependents = _.filter(packages, (pkg: any) => {
+      _.forEach(dependents, (dep: any) => {
+        if (_.isEqual(pkg.name, dep.name)) {
+          return pkg;
+        }
+      })
+    });
+
+    resolve(filteredDependents);
   } catch (e) {
     reject(e);
   }

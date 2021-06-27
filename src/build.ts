@@ -29,7 +29,11 @@ async function buildApp(appName: string, appPath: string) {
 
 async function copyDependentPackagesToLernaElectronForgeDirectory(name: string) {
   const dependents = await getLernaDependentsForApp(name);
-  console.log(dependents);
+
+  _.forEach(dependents, (dep: any) => {
+    const packageName: string = path.basename(dep.name);
+    copyPackageToLernaElectronForgeDirectory(packageName, dep.location);
+  });
 }
 
 function copyPackageToLernaElectronForgeDirectory(packageName: string, pathToPackage: string) {
