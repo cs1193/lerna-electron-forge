@@ -33,8 +33,12 @@ export const getElectronForgePackages = async (): Promise<any | undefined> => ne
 });
 
 export function isLernaMonorepo() {
-  const rootDir = path.resolve(process.cwd());
-  const lernaConfigFile = path.join(rootDir, 'lerna.json');
+  try {
+    const rootDir = path.resolve(process.cwd());
+    const lernaConfigFile = path.join(rootDir, 'lerna.json');
 
-  return fs.existsSync(lernaConfigFile);
+    return fs.existsSync(lernaConfigFile);
+  } catch (e) {
+    throw new Error(e);
+  }
 }

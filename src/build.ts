@@ -8,13 +8,17 @@ import { getElectronForgePackages } from './lerna';
 let spinner: any;
 
 async function parallelAppBuilds() {
-  lernaBootstrap();
+  try {
+    lernaBootstrap();
 
-  const electronForgePackages = await getElectronForgePackages();
+    const electronForgePackages = await getElectronForgePackages();
 
-  _.forEach(electronForgePackages, (efp) => {
-    buildApp(efp.name, efp.location);
-  });
+    _.forEach(electronForgePackages, (efp) => {
+      buildApp(efp.name, efp.location);
+    });
+  } catch (e) {
+    console.error(e);
+  }
 }
 
 // @ts-ignore
